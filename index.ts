@@ -21,7 +21,7 @@ app.post('/add', function (req, res) {
 })
 app.post('/search/at', function (req, res) {
     const data = req.body as SearchAtReq;
-    db.all<Database>("SELECT * FROM blocks WHERE x = ? AND y = ? AND z = ? AND d = ? ORDER BY unix ASC LIMIT ?", [data.x, data.y, data.z, data.d, data.count], (err, row) => {
+    db.all<Database>("SELECT * FROM blocks WHERE x = ? AND y = ? AND z = ? AND d = ? ORDER BY unix ASC LIMIT ?", [data.x, data.y, data.z, data.d, data.count ?? 10], (err, row) => {
         const resData: SearchAtRes = row.map((v) => {
             return {
                 name: v.name,
@@ -36,7 +36,7 @@ app.post('/search/at', function (req, res) {
 })
 app.post('/search/player', function (req, res) {
     const data = req.body as SearchPlayerReq;
-    db.all<Database>("SELECT * FROM blocks WHERE name = ? AND d = ? ORDER BY unix ASC LIMIT ?", [data.name, data.d, data.count], (err, row) => {
+    db.all<Database>("SELECT * FROM blocks WHERE name = ? AND d = ? ORDER BY unix ASC LIMIT ?", [data.name, data.d, data.count ?? 10], (err, row) => {
         const resData: SearchPlayerRes = row.map((v) => {
             return {
                 name: v.name,
@@ -55,7 +55,7 @@ app.post('/search/player', function (req, res) {
 app.post('/search/time', function (req, res) {
     const data = req.body as SearchTimeReq;
     const lastTime = Date.now() - data.time * 1000;
-    db.all<Database>("SELECT * FROM blocks WHERE unix >= ? AND d = ? ORDER BY unix ASC LIMIT ?", [lastTime, data.d, data.count], (err, row) => {
+    db.all<Database>("SELECT * FROM blocks WHERE unix >= ? AND d = ? ORDER BY unix ASC LIMIT ?", [lastTime, data.d, data.count ?? 10], (err, row) => {
         const resData: SearchTimeRes = row.map((v) => {
             return {
                 name: v.name,
