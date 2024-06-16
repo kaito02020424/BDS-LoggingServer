@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS blocks(name,xuid,mode,block,x,y,z,d,time,unix);");
 });
-app.post('/add', function (req, res) {
+app.post('/insert', function (req, res) {
     const data = req.body as AddDataReq;
     db.serialize(() => {
         db.run("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?,?,?)", [data.name, "null", data.mode, data.block, data.x, data.y, data.z, data.d, data.time, data.unix]);
