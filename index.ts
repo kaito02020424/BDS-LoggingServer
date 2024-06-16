@@ -1,7 +1,7 @@
 import { verbose } from "sqlite3";
 import { default as express } from "express";
 import { default as bodyParser } from "body-parser";
-import { AddDataReq, Database, SearchAtReq, SearchAtRes, SearchPlayerReq, SearchPlayerRes, SearchTimeReq, SearchTimeRes } from "./types";
+import { AddDataReq, Database, SearchAtReq, SearchAtRes, SearchPlayerReq, SearchPlayerRes, SearchRadiusReq, SearchRadiusRes, SearchTimeReq, SearchTimeRes } from "./types";
 const sqlite3 = verbose();
 const db = new sqlite3.Database("db/logging.db");
 const app = express();
@@ -71,6 +71,24 @@ app.post('/search/time', function (req, res) {
         res.json(resData);
     });
 })
+app.post('/search/radius', function (req, res) {
+    const data = req.body as SearchRadiusReq;
+    db.all<Database>("SELECT * FROM blocks WHERE pow(x-?,2) + pow(y-?,2) + pow(z-?,2) <= pow(?,2) AND d = ? ORDER BY unix ASC LIMIT ?", [data.x, data.y,data.z,data.r, data.d, data.count ?? 10], (err, row) => {
+        const resData: SearchRadiusRes = row.map((v) => {
+            return {
+                name: v.name,
+                mode: v.mode,
+                block: v.block,
+                x: v.x,
+                y: v.y,
+                z: v.z,
+                time: v.time,
+                unix: v.unix
+            }
+        });
+        res.json(resData);
+    })
+});
 /*
  * debug code *
 

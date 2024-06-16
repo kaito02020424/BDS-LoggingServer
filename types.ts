@@ -68,3 +68,21 @@ export type SearchTimeRes = {
     time: time,
     unix: number  //配列はunixでソートされていることを期待する. data[0]が最も古い(=unixが小さい)
 }[]
+export type SearchRadiusReq = {
+    x: number,
+    y: number,
+    z: number,
+    d: "OverWorld" | "The End" | "Nether",
+    r: number,  //半径
+    count?: number  //最新から, 何個まで取り出すか
+}
+export type SearchRadiusRes = {
+    name: string, 
+    mode: "Break" | "Place",
+    block: string,
+    x: number,
+    y: number,
+    z: number,
+    time: time,
+    unix: number  //配列はunixでソートされていることを期待する. data[0]が最も古い(=unixが小さい)
+}[]
