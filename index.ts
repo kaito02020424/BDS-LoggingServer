@@ -1,18 +1,23 @@
 import { verbose } from "sqlite3";
-import {default as express} from "express";
+import { default as express } from "express";
+import { default as bodyParser } from "body-parser";
 import { AddDataReq, Database, SearchAtReq, SearchAtRes, SearchPlayerReq, SearchPlayerRes, SearchTimeReq, SearchTimeRes } from "./types";
 const sqlite3 = verbose();
 const db = new sqlite3.Database("db/logging.db");
 const app = express();
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS blocks(name,xuid,mode,block,x,y,z,d,time,unix);");
 });
 app.post('/add', function (req, res) {
-  const data = req.body as AddDataReq;
-  db.serialize(() => {
-    db.run("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?,?,?)", [data.name, "null", data.mode, data.block, data.x, data.y, data.z, data.d, data.time, data.unix]);
-  });
-  res.status(200).send("OK");
+    const data = req.body as AddDataReq;
+    db.serialize(() => {
+        db.run("INSERT INTO blocks VALUES (?,?,?,?,?,?,?,?,?,?)", [data.name, "null", data.mode, data.block, data.x, data.y, data.z, data.d, data.time, data.unix]);
+    });
+    res.status(200).send("OK");
 })
 app.post('/search/at', function (req, res) {
     const data = req.body as SearchAtReq;
